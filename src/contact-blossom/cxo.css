@@ -1,0 +1,681 @@
+/*
+ * AI training for leaders and CXOs: a white, minimal page in the Futurelab
+ * Afterhours palette. Ink type on white, soft grey work surfaces, and the
+ * pastel accents as flat fills; where an accent has to be read as text or a
+ * thin line it uses its deep partner (see DEEP in components/cxo/content.ts).
+ * Everything is scoped to .cxo so nothing leaks into the rest of the site.
+ */
+.cxo {
+  --bg: #FFFFFF;
+  --surface: #F7F8FA;
+  --ink: #111111;
+  --secondary: #4B5563;
+  --gold: #F0D679;
+  --sky: #82C3FF;
+  --lilac: #C0A1EE;
+  --rose: #F49AB1;
+  --mint: #86DEB4;
+  --line: rgba(17, 17, 17, 0.07);
+  --shadow: 0 1px 2px rgba(17, 17, 17, 0.04), 0 12px 32px rgba(17, 17, 17, 0.06);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+
+  position: relative;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+.cxo ::selection {
+  background: var(--gold);
+  color: #111;
+}
+
+.cxo-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+
+.cxo-eyebrow {
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #6B7280;
+}
+
+/* ---------------------------------------------------------------- Text */
+
+/*
+ * The accent phrase in a headline: Instrument Serif italic in slate, the same
+ * pairing the enterprise workshop hero uses ("AI Enablement / for
+ * Organizations"), so the two pages read as one family.
+ */
+/* Two-tone headlines: the lead phrase in Ink, the rest settling into grey. */
+.cxo-quiet {
+  color: #86868B;
+}
+
+.cxo-serif {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: #596273;
+  letter-spacing: -0.03em;
+  font-size: 1.06em;
+  line-height: 0.9;
+}
+
+/* Brand highlight marker: a Gold band behind the lower third of a word. */
+.cxo-mark {
+  background: linear-gradient(transparent 60%, var(--gold) 60%, var(--gold) 92%, transparent 92%);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.cxo-hero-title {
+  font-size: clamp(46px, 5.8vw, 92px);
+  line-height: 0.94;
+  letter-spacing: -0.065em;
+}
+
+.cxo-outline-num {
+  font-size: clamp(56px, 6vw, 96px);
+  line-height: 0.9;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--a);
+}
+
+.cxo-stat {
+  font-size: clamp(56px, 6.2vw, 100px);
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- Surfaces */
+
+.cxo-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.cxo-glass-strong {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  box-shadow: 0 30px 80px rgba(29, 18, 48, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* Inputs on the frosted form stay just translucent enough to share its glow. */
+.cxo-glass-strong .cxo-input,
+.cxo-glass-strong .cxo-choice:not(.is-selected) {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* A soft grey card that turns white and catches its accent under the pointer. */
+.cxo-spotlight {
+  --mx: 50%;
+  --my: -200px;
+  position: relative;
+  isolation: isolate;
+  background: var(--surface);
+  border: 1px solid rgba(17, 17, 17, 0.05);
+  transition: transform 600ms var(--ease), background-color 600ms var(--ease), box-shadow 600ms var(--ease);
+}
+
+.cxo-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(480px circle at var(--mx) var(--my), color-mix(in srgb, var(--spot) 30%, transparent), transparent 50%);
+  opacity: 0;
+  transition: opacity 500ms var(--ease);
+}
+
+.cxo-spotlight::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(360px circle at var(--mx) var(--my), var(--spot), transparent 45%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 500ms var(--ease);
+  pointer-events: none;
+}
+
+.cxo-spotlight:hover {
+  transform: translateY(-4px);
+  background: var(--bg);
+  box-shadow: 0 24px 60px rgba(17, 17, 17, 0.08);
+}
+
+.cxo-spotlight:hover::before,
+.cxo-spotlight:hover::after {
+  opacity: 1;
+}
+
+/* Flat: a soft grey fill that deepens a touch on hover, no border, shadow or
+   glow. Used by the principle cards and the three offers, which lead with a
+   gradient tile; their titles sit at medium weight. */
+.cxo-flat {
+  position: relative;
+  background: #F5F5F7;
+  transition: background-color 500ms var(--ease);
+}
+
+.cxo-flat:hover {
+  background: #EFEFF2;
+}
+
+.cxo-flat h3.cxo-display {
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+/* An offer card: white, lit from the top-right by its accent, with a soft
+   counter-glow bottom-left and a deep shadow so the stacked deck reads. */
+.cxo-offer-card {
+  background:
+    radial-gradient(70% 90% at 100% 0%, color-mix(in srgb, var(--a) 38%, transparent), transparent 62%),
+    radial-gradient(55% 70% at 0% 100%, color-mix(in srgb, var(--a) 16%, transparent), transparent 70%),
+    #FFFFFF;
+  border: 1px solid rgba(17, 17, 17, 0.06);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 40px 90px -30px rgba(17, 17, 17, 0.22), 0 8px 24px rgba(17, 17, 17, 0.04);
+}
+
+.cxo-offer-card h3.cxo-display {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+/* A media tile: a soft wash of the card's accent with fine grain, like the
+   gradient thumbnails on an AI lab's research index. */
+.cxo-tile {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(90% 80% at 15% 10%, color-mix(in srgb, var(--a) 75%, white), transparent 65%),
+    radial-gradient(80% 70% at 95% 95%, color-mix(in srgb, var(--a) 45%, #FFF3CF), transparent 70%),
+    color-mix(in srgb, var(--a) 18%, white);
+}
+
+.cxo-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.35;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------------------------------------------------------------- Hero */
+
+/* The hero's soft colour, gathered behind the AI desk. */
+.cxo-hero-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(34% 44% at 72% 46%, rgba(192, 161, 238, 0.24), transparent 70%),
+    radial-gradient(26% 34% at 60% 70%, rgba(130, 195, 255, 0.22), transparent 70%),
+    radial-gradient(24% 30% at 84% 26%, rgba(240, 214, 121, 0.26), transparent 70%),
+    radial-gradient(30% 36% at 12% 30%, rgba(134, 222, 180, 0.12), transparent 70%);
+  animation: cxo-breathe 9s ease-in-out infinite alternate;
+}
+
+@keyframes cxo-breathe {
+  from { transform: scale(1); opacity: 0.85; }
+  to { transform: scale(1.12); opacity: 1; }
+}
+
+/* Fades the hero's glow and grid into the page below. */
+.cxo-hero-vignette {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, transparent 72%, var(--bg) 100%);
+}
+
+.cxo-grid-lines {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(17, 17, 17, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 17, 17, 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(60% 60% at 50% 50%, #000 20%, transparent 80%);
+  -webkit-mask-image: radial-gradient(60% 60% at 50% 50%, #000 20%, transparent 80%);
+}
+
+.cxo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  box-shadow: 0 1px 2px rgba(17, 17, 17, 0.04);
+}
+
+.cxo-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+  background: var(--gold);
+  box-shadow: 0 0 0 1px rgba(17, 17, 17, 0.12);
+}
+
+.cxo-scroll-cue {
+  display: flex;
+  height: 44px;
+  width: 26px;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 17, 17, 0.18);
+  color: #6B7280;
+  animation: cxo-bob 2.2s var(--ease) infinite;
+}
+
+@keyframes cxo-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* ---------------------------------------------------------------- Buttons */
+
+.cxo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border-radius: 999px;
+  padding: 15px 28px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: transform 450ms var(--ease), background-color 450ms var(--ease), box-shadow 450ms var(--ease), border-color 450ms var(--ease);
+}
+
+.cxo-btn:hover {
+  transform: translateY(-2px);
+}
+
+.cxo-btn:active {
+  transform: scale(0.98);
+}
+
+.cxo-btn-primary {
+  background: var(--ink);
+  color: #fff;
+}
+
+.cxo-btn-primary:hover {
+  box-shadow: 0 14px 40px rgba(17, 17, 17, 0.22);
+}
+
+.cxo-btn-ghost {
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid rgba(17, 17, 17, 0.14);
+}
+
+.cxo-btn-ghost:hover {
+  border-color: var(--ink);
+}
+
+.cxo-btn .cxo-arrow {
+  transition: transform 450ms var(--ease);
+}
+
+.cxo-btn:hover .cxo-arrow {
+  transform: translateX(4px);
+}
+
+.cxo-btn:focus-visible,
+.cxo-focus:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------- Principle art */
+
+.cxo-art-rings,
+.cxo-art-orbit {
+  position: relative;
+  height: 120px;
+  width: 120px;
+}
+
+.cxo-art-rings span {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 999px;
+  border: 1.5px solid var(--a);
+  opacity: 0;
+  animation: cxo-ripple 3.6s var(--ease) infinite;
+}
+
+.cxo-art-rings span:nth-child(2) { animation-delay: 1.2s; }
+.cxo-art-rings span:nth-child(3) { animation-delay: 2.4s; }
+
+.cxo-art-rings i,
+.cxo-art-orbit i {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  height: 14px;
+  width: 14px;
+  border-radius: 5px;
+  background: var(--a);
+}
+
+@keyframes cxo-ripple {
+  0% { transform: scale(0.15); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.cxo-art-bars {
+  display: flex;
+  height: 120px;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.cxo-art-bars span {
+  width: 8px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--a), color-mix(in srgb, var(--a) 12%, transparent));
+  animation: cxo-eq 1.9s ease-in-out infinite alternate;
+}
+
+@keyframes cxo-eq {
+  0% { height: 18%; opacity: 0.5; }
+  100% { height: 100%; opacity: 1; }
+}
+
+.cxo-art-orbit span {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 1px dashed rgba(17, 17, 17, 0.16);
+  animation: cxo-rotate 7s linear infinite;
+}
+
+.cxo-art-orbit span::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  height: 8px;
+  width: 8px;
+  margin-left: -4px;
+  border-radius: 3px;
+  background: var(--a);
+}
+
+.cxo-art-orbit span:nth-child(2) { inset: 18px; animation-duration: 5s; animation-direction: reverse; }
+.cxo-art-orbit span:nth-child(3) { inset: 36px; animation-duration: 3.4s; }
+
+@keyframes cxo-rotate {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------------------------------------------------------------- Bands */
+
+.cxo-band-glow {
+  position: absolute;
+  inset: 10% -10% auto;
+  height: 60%;
+  background:
+    radial-gradient(40% 60% at 20% 30%, rgba(240, 214, 121, 0.22), transparent 70%),
+    radial-gradient(40% 60% at 80% 40%, rgba(130, 195, 255, 0.2), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- Testimonials */
+
+.cxo-carousel {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+.cxo-carousel-track {
+  display: flex;
+  width: max-content;
+  padding-block: 12px 28px;
+  animation: cxo-carousel 70s linear infinite;
+}
+
+.cxo-carousel:hover .cxo-carousel-track,
+.cxo-carousel:focus-within .cxo-carousel-track {
+  animation-play-state: paused;
+}
+
+@keyframes cxo-carousel {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.cxo-testimonial {
+  transition: transform 600ms var(--ease), box-shadow 600ms var(--ease), border-color 600ms var(--ease);
+}
+
+.cxo-testimonial:hover {
+  transform: translateY(-6px);
+  border-color: rgba(17, 17, 17, 0.14);
+  box-shadow: 0 24px 60px rgba(17, 17, 17, 0.1);
+}
+
+.cxo-portrait-ring {
+  flex-shrink: 0;
+  padding: 2px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.1);
+}
+
+.cxo-portrait-ring > div {
+  border: 3px solid var(--bg);
+}
+
+/* ---------------------------------------------------------------- Founders */
+
+.cxo-founder {
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+  transition: transform 700ms var(--ease), box-shadow 700ms var(--ease);
+}
+
+.cxo-founder:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 70px rgba(17, 17, 17, 0.14);
+}
+
+/* ---------------------------------------------------------------- FAQ */
+
+.cxo-faq {
+  border-radius: 24px;
+  border: 1px solid transparent;
+  background: var(--surface);
+  transition: background-color 400ms var(--ease), border-color 400ms var(--ease), box-shadow 400ms var(--ease);
+}
+
+.cxo-faq:hover {
+  background: #F1F3F6;
+}
+
+.cxo-faq.is-open {
+  background: var(--bg);
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+}
+
+/* ---------------------------------------------------------------- Closing + form */
+
+/* The contact scene: the painting blurred into ambient light behind the form. */
+.cxo-blossom-ambient {
+  filter: blur(36px) saturate(1.25);
+  transform: scale(1.25);
+}
+
+/* The sharp painting dissolves into the ambient layer: rightward on desktop,
+   downward on phones, where the form sits below it. */
+.cxo-blossom-sharp {
+  mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 72%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 72%);
+}
+
+@media (min-width: 1024px) {
+  .cxo-blossom-sharp {
+    mask-image: linear-gradient(to right, #000 0%, #000 55%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 55%, transparent 100%);
+  }
+}
+
+/* A slow drift and zoom across the painting (the "Ken Burns" move). */
+.cxo-kenburns {
+  transform-origin: 40% 35%;
+  animation: cxo-kenburns 28s ease-in-out infinite alternate;
+}
+
+@keyframes cxo-kenburns {
+  from { transform: scale(1.02) translate(0, 0); }
+  to { transform: scale(1.12) translate(-2%, 1.5%); }
+}
+
+/* Type set over the painting reads in white. */
+.cxo-on-image .cxo-eyebrow {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.cxo-on-image .cxo-quiet {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.cxo-input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(17, 17, 17, 0.1);
+  background: var(--surface);
+  padding: 14px 16px;
+  font-size: 15px;
+  color: var(--ink);
+  transition: border-color 350ms var(--ease), background-color 350ms var(--ease), box-shadow 350ms var(--ease);
+}
+
+.cxo-input::placeholder {
+  color: #9CA3AF;
+}
+
+.cxo-input:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--bg);
+  box-shadow: 0 0 0 4px rgba(240, 214, 121, 0.45);
+}
+
+.cxo-choice {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  gap: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  background: var(--surface);
+  padding: 14px 16px;
+  color: var(--ink);
+  transition: background-color 400ms var(--ease), border-color 400ms var(--ease), transform 400ms var(--ease), box-shadow 400ms var(--ease);
+}
+
+.cxo-choice:hover {
+  border-color: rgba(17, 17, 17, 0.2);
+  transform: translateX(2px);
+}
+
+/* Brand selected state: Gold fill with a hairline Ink border. */
+.cxo-choice.is-selected {
+  background: var(--gold);
+  border-color: var(--ink);
+  box-shadow: 0 10px 30px rgba(240, 214, 121, 0.45);
+}
+
+.cxo-choice:has(input:focus-visible) {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.cxo-radio {
+  display: flex;
+  height: 22px;
+  width: 22px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 2px solid currentColor;
+}
+
+/* ---------------------------------------------------------------- Reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .cxo-hero-glow,
+  .cxo-scroll-cue,
+  .cxo-art-rings span,
+  .cxo-art-bars span,
+  .cxo-art-orbit span,
+  .cxo-kenburns {
+    animation: none;
+  }
+
+  .cxo-art-rings span { opacity: 0.4; transform: scale(0.7); }
+  .cxo-art-bars span { height: 60%; }
+
+  .cxo-carousel {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    mask-image: none;
+    -webkit-mask-image: none;
+    padding-inline: 20px;
+  }
+
+  .cxo-carousel-track { animation: none; }
+  .cxo-carousel-set[aria-hidden="true"] { display: none; }
+  .cxo-testimonial { scroll-snap-align: start; }
+
+  .cxo-spotlight,
+  .cxo-btn,
+  .cxo-testimonial,
+  .cxo-founder,
+  .cxo-choice {
+    transition: none;
+  }
+
+  .cxo-spotlight:hover,
+  .cxo-btn:hover,
+  .cxo-testimonial:hover,
+  .cxo-founder:hover {
+    transform: none;
+  }
+}
